@@ -99,4 +99,9 @@ def event_list(request):
 
 def event_detail(request, pk):
     event = get_object_or_404(selectors.events_with_seats(), pk=pk)
-    return render(request, "events/event_detail.html", {"event": event})
+    is_registered = (
+        request.user.is_authenticated
+        and event.registrations.filter(attendee=request.user).exists()
+    )
+    context = {"event": event, "is_registered": is_registered}
+    return render(request, "events/event_detail.html", context)
