@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}{{ event.title }} | Event Booking{% endblock %}
+
+{% block content %}
+  <a class="small text-decoration-none" href="{% url 'events:event_list' %}">&larr; All events</a>
+
+  <div class="card shadow-sm mt-2">
+    <div class="card-body p-4">
+      <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+        <h1 class="h3 mb-0">{{ event.title }}</h1>
+        {% include "events/_availability_badge.html" %}
+      </div>
+
+      <dl class="row mb-4">
+        <dt class="col-sm-3">Date and time</dt>
+        <dd class="col-sm-9">{{ event.start_datetime|date:"l, d F Y, H:i" }}</dd>
+
+        <dt class="col-sm-3">Venue</dt>
+        <dd class="col-sm-9">{{ event.venue }}</dd>
+
+        <dt class="col-sm-3">Hosted by</dt>
+        <dd class="col-sm-9">{{ event.organizer.get_full_name }}</dd>
+
+        <dt class="col-sm-3">Seats</dt>
+        <dd class="col-sm-9">
+          {{ event.seats_taken }} of {{ event.seat_limit }} taken
+          {% if event.seats_left > 0 %}({{ event.seats_left }} left){% endif %}
+        </dd>
+      </dl>
+
+      <h2 class="h6">About this event</h2>
+      {{ event.description|linebreaks }}
+    </div>
+  </div>
+{% endblock %}

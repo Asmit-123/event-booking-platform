@@ -1,0 +1,9 @@
+{% if event.is_cancelled %}
+  <span class="badge text-bg-secondary">Cancelled</span>
+{% elif event.is_past %}
+  <span class="badge text-bg-dark">Ended</span>
+{% elif event.seats_left <= 0 %}
+  <span class="badge text-bg-danger">Sold out</span>
+{% else %}
+  <span class="badge text-bg-success">{{ event.seats_left }} seat{{ event.seats_left|pluralize }} left</span>
+{% endif %}

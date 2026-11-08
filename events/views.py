@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404, redirect, render
+from django.core.paginator import Paginator
 
 from accounts.permissions import organizer_required
 
@@ -8,6 +9,7 @@ from . import selectors, services
 from .forms import EventForm
 from .models import Event
 
+EVENTS_PER_PAGE = 9
 
 def home(request):
     return render(request, "events/home.html")
@@ -88,3 +90,13 @@ def event_attendees(request, pk):
     registrations = selectors.event_registrations(event)
     context = {"event": event, "registrations": registrations}
     return render(request, "events/event_attendees.html", context)
+
+def event_list(request):
+    paginator = Paginator(selectors.upcoming_events(), EVENTS_PER_PAGE)
+    page = paginator.get_page(request.GET.get("page"))
+    return render(request, "events/event_list.html", {"page": page})
+
+
+def event_detail(request, pk):
+    event = get_object_or_404(selectors.events_with_seats(), pk=pk)
+    return render(request, "events/event_detail.html", {"event": event})
