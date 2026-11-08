@@ -52,6 +52,14 @@ class Event(models.Model):
     @property
     def is_past(self):
         return self.start_datetime <= timezone.now()
+    
+    @property
+    def is_past(self):
+        return self.start_datetime <= timezone.now()
+
+    @property
+    def is_editable(self):
+        return not self.is_cancelled and not self.is_past
 
     def __str__(self):
         return self.title

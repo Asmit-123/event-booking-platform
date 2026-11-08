@@ -18,6 +18,7 @@
             <th scope="col">Venue</th>
             <th scope="col" class="text-center">Seats taken</th>
             <th scope="col">Status</th>
+            <th scope="col"><span class="visually-hidden">Actions</span></th>
           </tr>
         </thead>
         <tbody>
@@ -34,6 +35,11 @@
                   <span class="badge text-bg-dark">Past</span>
                 {% else %}
                   <span class="badge text-bg-success">Active</span>
+                {% endif %}
+              </td>
+              <td class="text-end">
+                {% if event.is_editable %}
+                  <a class="btn btn-sm btn-outline-primary" href="{% url 'events:event_edit' event.pk %}">Edit</a>
                 {% endif %}
               </td>
             </tr>

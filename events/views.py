@@ -1,11 +1,12 @@
 from django.contrib import messages
 from django.core.exceptions import ValidationError
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 
 from accounts.permissions import organizer_required
 
 from . import selectors, services
 from .forms import EventForm
+from .models import Event
 
 
 def home(request):
@@ -34,4 +35,29 @@ def event_create(request):
         form = EventForm()
 
     context = {"form": form, "heading": "Create event", "submit_label": "Create event"}
+    return render(request, "events/event_form.html", context)
+
+
+@organizer_required
+def event_edit(request, pk):
+    event = get_object_or_404(Event, pk=pk, organizer=request.user)
+
+    if not event.is_editable:
+        messages.error(request, "Cancelled or past events can no longer be edited.")
+        return redirect("events:organizer_dashboard")
+
+    if request.method == "POST":
+        form = EventForm(request.POST, instance=event)
+        if form.is_valid():
+            try:
+                updated = services.update_event(request.user, event.pk, **form.cleaned_data)
+            except ValidationError as error:
+                form.add_error(None, error)
+            else:
+                messages.success(request, f"\u201c{updated.title}\u201d has been updated.")
+                return redirect("events:organizer_dashboard")
+    else:
+        form = EventForm(instance=event)
+
+    context = {"form": form, "heading": "Edit event", "submit_label": "Save changes"}
     return render(request, "events/event_form.html", context)
