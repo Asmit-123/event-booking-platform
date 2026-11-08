@@ -6,12 +6,14 @@ from django.views.decorators.http import require_POST
 from accounts.permissions import attendee_required
 from events.models import Event
 
-from . import services
+from . import selectors, services
 
 
 @attendee_required
 def my_registrations(request):
-    return render(request, "registrations/my_registrations.html")
+    upcoming, earlier = selectors.attendee_registrations(request.user)
+    context = {"upcoming": upcoming, "earlier": earlier}
+    return render(request, "registrations/my_registrations.html", context)
 
 
 @attendee_required

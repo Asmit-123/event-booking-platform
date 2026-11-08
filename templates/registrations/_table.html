@@ -1,0 +1,36 @@
+<div class="table-responsive">
+  <table class="table table-hover align-middle bg-white shadow-sm">
+    <thead class="table-light">
+      <tr>
+        <th scope="col">Event</th>
+        <th scope="col">Date and time</th>
+        <th scope="col">Venue</th>
+        <th scope="col">Registered on</th>
+        <th scope="col">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for registration in registrations %}
+        <tr>
+          <td>
+            <a class="fw-semibold text-decoration-none" href="{% url 'events:event_detail' registration.event.pk %}">
+              {{ registration.event.title }}
+            </a>
+          </td>
+          <td>{{ registration.event.start_datetime|date:"D, d M Y, H:i" }}</td>
+          <td>{{ registration.event.venue }}</td>
+          <td>{{ registration.created_at|date:"d M Y, H:i" }}</td>
+          <td>
+            {% if registration.event.is_cancelled %}
+              <span class="badge text-bg-secondary">Cancelled</span>
+            {% elif registration.event.is_past %}
+              <span class="badge text-bg-dark">Ended</span>
+            {% else %}
+              <span class="badge text-bg-success">Registered</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

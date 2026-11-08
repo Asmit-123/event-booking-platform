@@ -3,6 +3,27 @@
 {% block title %}My registrations | Event Booking{% endblock %}
 
 {% block content %}
-  <h1 class="h3">My registrations</h1>
-  <p class="text-muted">Placeholder: the events you have registered for will appear here in Phase 5.</p>
+  <h1 class="h3 mb-3">My registrations</h1>
+
+  {% if upcoming or earlier %}
+    <h2 class="h5">Upcoming</h2>
+    {% if upcoming %}
+      {% include "registrations/_table.html" with registrations=upcoming %}
+    {% else %}
+      <p class="text-muted">
+        You have no upcoming registrations.
+        <a href="{% url 'events:event_list' %}">Browse events</a>
+      </p>
+    {% endif %}
+
+    {% if earlier %}
+      <h2 class="h5 mt-4">Cancelled and past</h2>
+      {% include "registrations/_table.html" with registrations=earlier %}
+    {% endif %}
+  {% else %}
+    <div class="text-center py-5 bg-white rounded shadow-sm">
+      <p class="text-muted mb-3">You have not registered for any events yet.</p>
+      <a class="btn btn-primary" href="{% url 'events:event_list' %}">Browse upcoming events</a>
+    </div>
+  {% endif %}
 {% endblock %}
