@@ -61,3 +61,23 @@ def event_edit(request, pk):
 
     context = {"form": form, "heading": "Edit event", "submit_label": "Save changes"}
     return render(request, "events/event_form.html", context)
+
+@organizer_required
+def event_cancel(request, pk):
+    event = get_object_or_404(Event, pk=pk, organizer=request.user)
+
+    if not event.is_editable:
+        messages.error(request, "Only active, upcoming events can be cancelled.")
+        return redirect("events:organizer_dashboard")
+
+    if request.method == "POST":
+        try:
+            services.cancel_event(request.user, event.pk)
+        except ValidationError as error:
+            messages.error(request, " ".join(error.messages))
+        else:
+            messages.success(request, f"\u201c{event.title}\u201d has been cancelled.")
+        return redirect("events:organizer_dashboard")
+
+    context = {"event": event, "registered": event.registrations.count()}
+    return render(request, "events/event_cancel_confirm.html", context)

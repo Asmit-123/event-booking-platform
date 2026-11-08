@@ -37,9 +37,10 @@
                   <span class="badge text-bg-success">Active</span>
                 {% endif %}
               </td>
-              <td class="text-end">
+              <td class="text-end text-nowrap">
                 {% if event.is_editable %}
                   <a class="btn btn-sm btn-outline-primary" href="{% url 'events:event_edit' event.pk %}">Edit</a>
+                  <a class="btn btn-sm btn-outline-danger" href="{% url 'events:event_cancel' event.pk %}">Cancel</a>
                 {% endif %}
               </td>
             </tr>

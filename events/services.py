@@ -58,3 +58,19 @@ def update_event(organizer, event_id, *, title, description, venue, start_dateti
     event.full_clean()
     event.save()
     return event
+
+@transaction.atomic
+def cancel_event(organizer, event_id):
+    """Cancel an upcoming event owned by the organizer, keeping its registrations."""
+    event = Event.objects.select_for_update().get(pk=event_id)
+
+    if event.organizer_id != organizer.pk:
+        raise PermissionDenied("You can only cancel your own events.")
+    if event.is_cancelled:
+        raise ValidationError("This event is already cancelled.")
+    if event.is_past:
+        raise ValidationError("A past event cannot be cancelled.")
+
+    event.status = Event.Status.CANCELLED
+    event.save(update_fields=["status", "updated_at"])
+    return event
