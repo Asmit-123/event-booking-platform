@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Attendees | Event Booking{% endblock %}
+
+{% block content %}
+  <a class="small text-decoration-none" href="{% url 'events:organizer_dashboard' %}">&larr; Back to your events</a>
+
+  <div class="d-flex flex-wrap justify-content-between align-items-start mt-2 mb-3">
+    <div>
+      <h1 class="h3 mb-1">{{ event.title }} {% include "events/_status_badge.html" %}</h1>
+      <p class="text-muted mb-0">
+        {{ event.start_datetime|date:"D, d M Y, H:i" }} &middot; {{ event.venue }}
+      </p>
+    </div>
+    <div class="text-end">
+      <div class="fs-4 fw-semibold">{{ registrations|length }} / {{ event.seat_limit }}</div>
+      <div class="text-muted small">seats taken</div>
+    </div>
+  </div>
+
+  {% if registrations %}
+    <div class="table-responsive">
+      <table class="table table-hover align-middle bg-white shadow-sm">
+        <thead class="table-light">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Registered on</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for registration in registrations %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td class="fw-semibold">{{ registration.attendee.get_full_name }}</td>
+              <td>{{ registration.attendee.email }}</td>
+              <td>{{ registration.created_at|date:"d M Y, H:i" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="text-center py-5 bg-white rounded shadow-sm">
+      <p class="text-muted mb-0">Nobody has registered for this event yet.</p>
+    </div>
+  {% endif %}
+{% endblock %}

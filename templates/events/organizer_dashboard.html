@@ -28,16 +28,9 @@
               <td>{{ event.start_datetime|date:"D, d M Y, H:i" }}</td>
               <td>{{ event.venue }}</td>
               <td class="text-center">{{ event.seats_taken }} / {{ event.seat_limit }}</td>
-              <td>
-                {% if event.is_cancelled %}
-                  <span class="badge text-bg-secondary">Cancelled</span>
-                {% elif event.is_past %}
-                  <span class="badge text-bg-dark">Past</span>
-                {% else %}
-                  <span class="badge text-bg-success">Active</span>
-                {% endif %}
-              </td>
+              <td>{% include "events/_status_badge.html" %}</td>
               <td class="text-end text-nowrap">
+                <a class="btn btn-sm btn-outline-secondary" href="{% url 'events:event_attendees' event.pk %}">Attendees</a>
                 {% if event.is_editable %}
                   <a class="btn btn-sm btn-outline-primary" href="{% url 'events:event_edit' event.pk %}">Edit</a>
                   <a class="btn btn-sm btn-outline-danger" href="{% url 'events:event_cancel' event.pk %}">Cancel</a>

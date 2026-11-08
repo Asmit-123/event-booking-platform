@@ -81,3 +81,10 @@ def event_cancel(request, pk):
 
     context = {"event": event, "registered": event.registrations.count()}
     return render(request, "events/event_cancel_confirm.html", context)
+
+@organizer_required
+def event_attendees(request, pk):
+    event = get_object_or_404(Event, pk=pk, organizer=request.user)
+    registrations = selectors.event_registrations(event)
+    context = {"event": event, "registrations": registrations}
+    return render(request, "events/event_attendees.html", context)

@@ -10,3 +10,8 @@ def organizer_events(organizer):
         .annotate(seats_taken=Count("registrations"))
         .order_by("-start_datetime")
     )
+
+
+def event_registrations(event):
+    """Registrations for an event, earliest first, with attendee data loaded."""
+    return event.registrations.select_related("attendee").order_by("created_at")

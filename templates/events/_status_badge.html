@@ -1,0 +1,7 @@
+{% if event.is_cancelled %}
+  <span class="badge text-bg-secondary">Cancelled</span>
+{% elif event.is_past %}
+  <span class="badge text-bg-dark">Past</span>
+{% else %}
+  <span class="badge text-bg-success">Active</span>
+{% endif %}
