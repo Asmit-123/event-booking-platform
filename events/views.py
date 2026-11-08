@@ -4,7 +4,7 @@ from django.shortcuts import redirect, render
 
 from accounts.permissions import organizer_required
 
-from . import services
+from . import selectors, services
 from .forms import EventForm
 
 
@@ -14,7 +14,8 @@ def home(request):
 
 @organizer_required
 def organizer_dashboard(request):
-    return render(request, "events/organizer_dashboard.html")
+    events = selectors.organizer_events(request.user)
+    return render(request, "events/organizer_dashboard.html", {"events": events})
 
 
 @organizer_required

@@ -4,8 +4,47 @@
 
 {% block content %}
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="h3 mb-0">Organizer dashboard</h1>
+    <h1 class="h3 mb-0">Your events</h1>
     <a class="btn btn-primary" href="{% url 'events:event_create' %}">Create event</a>
   </div>
-  <p class="text-muted">Your events and their seat counts will appear here in the next task.</p>
+
+  {% if events %}
+    <div class="table-responsive">
+      <table class="table table-hover align-middle bg-white shadow-sm">
+        <thead class="table-light">
+          <tr>
+            <th scope="col">Event</th>
+            <th scope="col">Date and time</th>
+            <th scope="col">Venue</th>
+            <th scope="col" class="text-center">Seats taken</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for event in events %}
+            <tr>
+              <td class="fw-semibold">{{ event.title }}</td>
+              <td>{{ event.start_datetime|date:"D, d M Y, H:i" }}</td>
+              <td>{{ event.venue }}</td>
+              <td class="text-center">{{ event.seats_taken }} / {{ event.seat_limit }}</td>
+              <td>
+                {% if event.is_cancelled %}
+                  <span class="badge text-bg-secondary">Cancelled</span>
+                {% elif event.is_past %}
+                  <span class="badge text-bg-dark">Past</span>
+                {% else %}
+                  <span class="badge text-bg-success">Active</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="text-center py-5 bg-white rounded shadow-sm">
+      <p class="text-muted mb-3">You have not created any events yet.</p>
+      <a class="btn btn-primary" href="{% url 'events:event_create' %}">Create your first event</a>
+    </div>
+  {% endif %}
 {% endblock %}
