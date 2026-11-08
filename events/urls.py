@@ -6,4 +6,5 @@ app_name = "events"
 
 urlpatterns = [
     path("", views.home, name="home"),
+    path("organizer/", views.organizer_dashboard, name="organizer_dashboard"),
 ]

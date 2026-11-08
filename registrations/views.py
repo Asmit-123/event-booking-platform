@@ -1,3 +1,8 @@
 from django.shortcuts import render
 
-# Create your views here.
+from accounts.permissions import attendee_required
+
+
+@attendee_required
+def my_registrations(request):
+    return render(request, "registrations/my_registrations.html")
