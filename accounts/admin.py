@@ -30,3 +30,9 @@ class CustomUserAdmin(UserAdmin):
             },
         ),
     )
+
+    def get_readonly_fields(self, request, obj=None):
+        readonly = super().get_readonly_fields(request, obj)
+        if obj is not None:
+            return (*readonly, "role")
+        return readonly
