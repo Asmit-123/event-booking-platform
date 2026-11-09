@@ -4,10 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Event Booking{% endblock %}</title>
+  <script src="{% static 'js/theme.js' %}"></script>
   <link href="{% static 'vendor/bootstrap/bootstrap.min.css' %}" rel="stylesheet">
   <link href="{% static 'css/app.css' %}" rel="stylesheet">
 </head>
-<body class="bg-light d-flex flex-column min-vh-100">
+<body class="bg-body-tertiary d-flex flex-column min-vh-100">
   <a class="visually-hidden-focusable" href="#main">Skip to main content</a>
 
   <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark" aria-label="Main navigation">
@@ -37,6 +38,7 @@
         {% endwith %}
 
         <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-2 text-white">
+          <button type="button" id="theme-toggle" class="btn btn-outline-light btn-sm" aria-pressed="false">Dark mode</button>
           {% if user.is_authenticated %}
             <span>
               {{ user.get_full_name }}

@@ -47,4 +47,21 @@
     }
     document.querySelectorAll("form[data-submitting='true']").forEach(unlockForm);
   });
+  
+  // Light/dark theme toggle. The initial theme is applied earlier by theme.js.
+  var toggle = document.getElementById("theme-toggle");
+  if (toggle) {
+    var root = document.documentElement;
+    toggle.setAttribute("aria-pressed", String(root.getAttribute("data-bs-theme") === "dark"));
+    toggle.addEventListener("click", function () {
+      var next = root.getAttribute("data-bs-theme") === "dark" ? "light" : "dark";
+      root.setAttribute("data-bs-theme", next);
+      toggle.setAttribute("aria-pressed", String(next === "dark"));
+      try {
+        localStorage.setItem("theme", next);
+      } catch (error) {
+        /* storage blocked: the choice just won't be remembered */
+      }
+    });
+  }
 })();

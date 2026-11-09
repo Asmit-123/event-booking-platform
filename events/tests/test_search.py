@@ -88,3 +88,9 @@ class SearchViewTests(TestCase):
 
         self.assertContains(response, "q=jazz")
         self.assertContains(response, "page=2")
+        
+class ThemeToggleTests(TestCase):
+    def test_base_template_loads_theme_script_and_toggle(self):
+        response = self.client.get(reverse("events:home"))
+        self.assertContains(response, "js/theme.js")
+        self.assertContains(response, 'id="theme-toggle"')
