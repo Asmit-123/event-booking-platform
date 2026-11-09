@@ -4,7 +4,9 @@ A full-stack event booking application built with **Python, Django, PostgreSQL, 
 
 ## Live application
 
-The production URL is managed by the Vercel project. Open the Vercel dashboard and use the current **Production** domain, since deployment URLs and aliases can change.
+**Production URL:** https://event-booking-platform-orpin.vercel.app
+
+Open the live application to browse events, create an account, and explore the attendee and organizer workflows.
 
 ## Features
 
