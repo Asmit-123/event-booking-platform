@@ -26,8 +26,9 @@ def home(request):
 
 @organizer_required
 def organizer_dashboard(request):
-    events = selectors.organizer_events(request.user)
-    return render(request, "events/organizer_dashboard.html", {"events": events})
+    events = list(selectors.organizer_events(request.user))
+    context = {"events": events, "stats": selectors.summarize_organizer_events(events)}
+    return render(request, "events/organizer_dashboard.html", context)
 
 
 @organizer_required

@@ -9,6 +9,35 @@
   </div>
 
   {% if events %}
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-lg-3">
+        <div class="card h-100 shadow-sm"><div class="card-body">
+          <div class="fs-3 fw-semibold">{{ stats.total_events }}</div>
+          <div class="text-muted small">Events created</div>
+        </div></div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="card h-100 shadow-sm"><div class="card-body">
+          <div class="fs-3 fw-semibold">{{ stats.upcoming_events }}</div>
+          <div class="text-muted small">Upcoming events</div>
+        </div></div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="card h-100 shadow-sm"><div class="card-body">
+          <div class="fs-3 fw-semibold">{{ stats.total_registrations }}</div>
+          <div class="text-muted small">Total registrations</div>
+        </div></div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="card h-100 shadow-sm"><div class="card-body">
+          <div class="fs-3 fw-semibold">{{ stats.fill_rate }}%</div>
+          <div class="text-muted small">Average fill rate</div>
+        </div></div>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if events %}
     <div class="table-responsive">
       <table class="table table-hover align-middle bg-white shadow-sm">
         <thead class="table-light">
@@ -17,6 +46,7 @@
             <th scope="col">Date and time</th>
             <th scope="col">Venue</th>
             <th scope="col" class="text-center">Seats taken</th>
+            <th scope="col" class="d-none d-md-table-cell">Fill</th>
             <th scope="col">Status</th>
             <th scope="col"><span class="visually-hidden">Actions</span></th>
           </tr>
@@ -28,6 +58,9 @@
               <td>{{ event.start_datetime|date:"D, d M Y, H:i" }}</td>
               <td>{{ event.venue }}</td>
               <td class="text-center">{{ event.seats_taken }} / {{ event.seat_limit }}</td>
+              <td class="d-none d-md-table-cell">
+                <progress class="event-fill" value="{{ event.seats_taken }}" max="{{ event.seat_limit }}" aria-hidden="true"></progress>
+              </td>
               <td>{% include "events/_status_badge.html" %}</td>
               <td class="text-end text-nowrap">
                 <a class="btn btn-sm btn-outline-secondary" href="{% url 'events:event_attendees' event.pk %}">Attendees</a>

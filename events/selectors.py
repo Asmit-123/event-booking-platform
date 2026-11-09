@@ -73,3 +73,20 @@ def filter_by_date_range(queryset, date_from=None, date_to=None):
 def only_with_seats(queryset):
     """Keep events with at least one free seat (needs the seats_left annotation)."""
     return queryset.filter(seats_left__gt=0)
+
+def summarize_organizer_events(events):
+    """Dashboard numbers from an already-loaded list of events annotated with seats_taken.
+
+    Cancelled events are left out of the registration and fill-rate figures.
+    """
+    live = [event for event in events if not event.is_cancelled]
+    upcoming = [event for event in live if not event.is_past]
+    seats_total = sum(event.seat_limit for event in live)
+    seats_taken = sum(event.seats_taken for event in live)
+    return {
+        "total_events": len(events),
+        "upcoming_events": len(upcoming),
+        "cancelled_events": len(events) - len(live),
+        "total_registrations": seats_taken,
+        "fill_rate": round(100 * seats_taken / seats_total) if seats_total else 0,
+    }
