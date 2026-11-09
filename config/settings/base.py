@@ -58,10 +58,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-# Temporary: replaced by Neon PostgreSQL in the next task.
+# Use Neon’s pooled URL for web requests. PgBouncer transaction pooling does
+# not support server-side cursors, so disable them for this connection.
 DATABASES = {
     "default": env.db("DATABASE_URL"),
 }
+DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -94,6 +96,8 @@ DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="Event Booking <noreply@e
 
 STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+# Vercel runs collectstatic and serves the collected files through its CDN.
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Django calls error messages "error"; Bootstrap calls the matching alert "danger".
 MESSAGE_TAGS = {message_constants.ERROR: "danger"}
