@@ -92,11 +92,13 @@ class ErrorPageTests(TestCase):
         self.assertEqual(response.status_code, 403)
         self.assertTemplateUsed(response, "403.html")
 
-    def test_500_page_is_standalone(self):
+    def test_500_page_is_standalone_and_uses_local_assets(self):
         html = render_to_string("500.html")
 
         self.assertIn("Something went wrong", html)
         self.assertNotIn("{%", html)
+        self.assertIn(static("vendor/bootstrap/bootstrap.min.css"), html)
+        self.assertNotIn("cdn.jsdelivr.net", html)
 
 
 class LayoutAndAccessibilityTests(TestCase):
@@ -107,11 +109,17 @@ class LayoutAndAccessibilityTests(TestCase):
         self.assertContains(response, 'id="main"')
         self.assertContains(response, '<html lang="en">')
 
-    def test_shared_assets_are_linked(self):
+    def test_shared_assets_are_local_and_no_third_party_hosts_are_used(self):
         response = self.client.get(reverse("events:home"))
 
-        self.assertContains(response, static("css/app.css"))
-        self.assertContains(response, static("js/app.js"))
+        for path in (
+            "css/app.css",
+            "js/app.js",
+            "vendor/bootstrap/bootstrap.min.css",
+            "vendor/bootstrap/bootstrap.bundle.min.js",
+        ):
+            self.assertContains(response, static(path))
+        self.assertNotContains(response, "cdn.jsdelivr.net")
 
     def test_current_page_is_marked_in_the_navigation(self):
         browse = self.client.get(reverse("events:event_list"))
