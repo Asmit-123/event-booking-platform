@@ -1,6 +1,21 @@
+{% load static %}
 <div class="col">
   <div class="card h-100 shadow-sm event-card">
-    <div class="event-banner-pattern" aria-hidden="true">
+    <div class="event-banner-wrapper" aria-hidden="true">
+      {% if event.pk|divisibleby:6 %}
+        <img src="{% static 'images/banner-6.jpg' %}" alt="" class="event-banner-img" loading="lazy">
+      {% elif event.pk|divisibleby:5 %}
+        <img src="{% static 'images/banner-5.jpg' %}" alt="" class="event-banner-img" loading="lazy">
+      {% elif event.pk|divisibleby:4 %}
+        <img src="{% static 'images/banner-4.jpg' %}" alt="" class="event-banner-img" loading="lazy">
+      {% elif event.pk|divisibleby:3 %}
+        <img src="{% static 'images/banner-3.jpg' %}" alt="" class="event-banner-img" loading="lazy">
+      {% elif event.pk|divisibleby:2 %}
+        <img src="{% static 'images/banner-2.jpg' %}" alt="" class="event-banner-img" loading="lazy">
+      {% else %}
+        <img src="{% static 'images/banner-1.jpg' %}" alt="" class="event-banner-img" loading="lazy">
+      {% endif %}
+      <div class="event-banner-overlay"></div>
       <div class="event-date-badge">
         <span class="event-date-month">{{ event.start_datetime|date:"M" }}</span>
         <span class="event-date-day">{{ event.start_datetime|date:"d" }}</span>
@@ -29,7 +44,7 @@
 
       <div class="event-meta-item mb-3">
         <svg class="event-meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+          <path d="M19 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
           <circle cx="12" cy="7" r="4"></circle>
         </svg>
         <span>Hosted by {{ event.organizer.get_full_name }}</span>

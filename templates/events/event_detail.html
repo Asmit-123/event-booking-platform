@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}{{ event.title }} | Event Booking{% endblock %}
 
@@ -8,6 +9,23 @@
   </a>
 
   <div class="card shadow-sm border-0 mb-4 overflow-hidden">
+    <div class="event-detail-banner-wrapper" aria-hidden="true">
+      {% if event.pk|divisibleby:6 %}
+        <img src="{% static 'images/banner-6.jpg' %}" alt="" class="event-detail-banner-img">
+      {% elif event.pk|divisibleby:5 %}
+        <img src="{% static 'images/banner-5.jpg' %}" alt="" class="event-detail-banner-img">
+      {% elif event.pk|divisibleby:4 %}
+        <img src="{% static 'images/banner-4.jpg' %}" alt="" class="event-detail-banner-img">
+      {% elif event.pk|divisibleby:3 %}
+        <img src="{% static 'images/banner-3.jpg' %}" alt="" class="event-detail-banner-img">
+      {% elif event.pk|divisibleby:2 %}
+        <img src="{% static 'images/banner-2.jpg' %}" alt="" class="event-detail-banner-img">
+      {% else %}
+        <img src="{% static 'images/banner-1.jpg' %}" alt="" class="event-detail-banner-img">
+      {% endif %}
+      <div class="event-detail-banner-overlay"></div>
+    </div>
+
     <div class="event-hero-banner">
       <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
         <div>
