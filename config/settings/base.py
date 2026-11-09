@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import environ
+from django.contrib.messages import constants as message_constants
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -76,5 +77,9 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "static/"
+STATICFILES_DIRS = [BASE_DIR / "static"]
+
+# Django calls error messages "error"; Bootstrap calls the matching alert "danger".
+MESSAGE_TAGS = {message_constants.ERROR: "danger"}
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

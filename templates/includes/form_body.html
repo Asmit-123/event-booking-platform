@@ -1,0 +1,32 @@
+{% if form.non_field_errors %}
+  <div class="alert alert-danger" role="alert">
+    {% for error in form.non_field_errors %}<div>{{ error }}</div>{% endfor %}
+  </div>
+{% endif %}
+
+{% for field in form %}
+  <div class="mb-3">
+    {% if field.widget_type == "radioselect" %}
+      <fieldset>
+        <legend class="form-label fs-6">{{ field.label }}</legend>
+        {% for radio in field %}
+          <div class="form-check">
+            {{ radio.tag }}
+            <label class="form-check-label" for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+          </div>
+        {% endfor %}
+      </fieldset>
+    {% else %}
+      <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+    {% endif %}
+
+    {% if field.help_text %}
+      <div id="{{ field.auto_id }}_helptext" class="form-text">{{ field.help_text }}</div>
+    {% endif %}
+
+    {% for error in field.errors %}
+      <div class="invalid-feedback d-block">{{ error }}</div>
+    {% endfor %}
+  </div>
+{% endfor %}

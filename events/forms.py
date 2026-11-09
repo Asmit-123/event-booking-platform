@@ -1,10 +1,12 @@
 from django import forms
 
+from accounts.forms import BootstrapFormMixin
+
 from .models import Event
 from .validators import validate_start_in_future
 
 
-class EventForm(forms.ModelForm):
+class EventForm(BootstrapFormMixin, forms.ModelForm):
     """Input form for creating or editing an event."""
 
     class Meta:
@@ -18,14 +20,12 @@ class EventForm(forms.ModelForm):
             "start_datetime": "Entered and shown in Asia/Kolkata time.",
         }
         widgets = {
-            "title": forms.TextInput(attrs={"class": "form-control"}),
-            "description": forms.Textarea(attrs={"class": "form-control", "rows": 5}),
-            "venue": forms.TextInput(attrs={"class": "form-control"}),
+            "description": forms.Textarea(attrs={"rows": 5}),
             "start_datetime": forms.DateTimeInput(
-                attrs={"class": "form-control", "type": "datetime-local"},
+                attrs={"type": "datetime-local"},
                 format="%Y-%m-%dT%H:%M",
             ),
-            "seat_limit": forms.NumberInput(attrs={"class": "form-control", "min": 1}),
+            "seat_limit": forms.NumberInput(attrs={"min": 1}),
         }
 
     def clean_start_datetime(self):
