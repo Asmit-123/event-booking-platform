@@ -1,6 +1,66 @@
 {% extends "base.html" %}
 
+{% block title %}Event Booking | Find an event, save your seat{% endblock %}
+
 {% block content %}
-  <h1 class="h3">Welcome to Event Booking</h1>
-  <p class="text-muted">This is a placeholder home page. The real landing page comes in Phase 7.</p>
+  <section class="text-center py-5 px-3 hero rounded-3 mb-5">
+    <h1 class="display-5 fw-bold">Find an event. Save your seat.</h1>
+    <p class="lead text-muted col-lg-7 mx-auto">
+      Organizers publish events with a fixed number of seats. Attendees browse and register in a click.
+      Seats are counted carefully, so an event is never overbooked.
+    </p>
+    <div class="d-flex flex-wrap gap-2 justify-content-center">
+      <a class="btn btn-primary btn-lg" href="{% url 'events:event_list' %}">Browse events</a>
+      {% if user.is_organizer %}
+        <a class="btn btn-outline-primary btn-lg" href="{% url 'events:event_create' %}">Create an event</a>
+      {% elif user.is_attendee %}
+        <a class="btn btn-outline-primary btn-lg" href="{% url 'registrations:my_registrations' %}">My registrations</a>
+      {% else %}
+        <a class="btn btn-outline-primary btn-lg" href="{% url 'accounts:signup' %}">Sign up free</a>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="mb-5" aria-labelledby="how-it-works">
+    <h2 id="how-it-works" class="h4 mb-3">How it works</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-3">
+      <div class="col">
+        <div class="card h-100 shadow-sm"><div class="card-body">
+          <h3 class="h6">1. Organizers publish</h3>
+          <p class="text-muted mb-0">Create an event with a date, a venue and a seat limit. Edit or cancel it any time before it starts.</p>
+        </div></div>
+      </div>
+      <div class="col">
+        <div class="card h-100 shadow-sm"><div class="card-body">
+          <h3 class="h6">2. Attendees register</h3>
+          <p class="text-muted mb-0">Browse upcoming events, see how many seats are left, and take one. Each person gets one seat per event.</p>
+        </div></div>
+      </div>
+      <div class="col">
+        <div class="card h-100 shadow-sm"><div class="card-body">
+          <h3 class="h6">3. Seats stay honest</h3>
+          <p class="text-muted mb-0">The seat limit is enforced by the server even when many people register at once.</p>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="coming-up">
+    <div class="d-flex justify-content-between align-items-baseline mb-3">
+      <h2 id="coming-up" class="h4 mb-0">Coming up</h2>
+      <a href="{% url 'events:event_list' %}">See all events</a>
+    </div>
+
+    {% if featured %}
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+        {% for event in featured %}
+          {% include "events/_event_card.html" %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="text-center py-5 bg-body rounded shadow-sm">
+        <p class="text-muted mb-0">There are no upcoming events right now. Please check back soon.</p>
+      </div>
+    {% endif %}
+  </section>
 {% endblock %}

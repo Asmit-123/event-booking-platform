@@ -12,7 +12,8 @@ from .models import Event
 EVENTS_PER_PAGE = 9
 
 def home(request):
-    return render(request, "events/home.html")
+    featured = selectors.upcoming_events()[:3]
+    return render(request, "events/home.html", {"featured": featured})
 
 
 @organizer_required
