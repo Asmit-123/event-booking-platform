@@ -35,3 +35,19 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+    
+class LoginAttempt(models.Model):
+    """A failed login, kept briefly so repeated failures can be throttled."""
+
+    ip_address = models.GenericIPAddressField()
+    email = models.CharField(max_length=254, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["ip_address", "created_at"], name="login_attempt_ip_time_idx"),
+            models.Index(fields=["ip_address", "email", "created_at"], name="login_attempt_ip_email_idx"),
+        ]
+
+    def __str__(self):
+        return f"{self.email or '(blank)'} from {self.ip_address}"

@@ -1,0 +1,19 @@
+[run]
+source =
+    accounts
+    config
+    events
+    registrations
+
+branch = True
+
+omit =
+    */migrations/*
+    */tests/*
+    config/wsgi.py
+    config/asgi.py
+    config/settings/production.py
+
+[report]
+show_missing = True
+skip_covered = True

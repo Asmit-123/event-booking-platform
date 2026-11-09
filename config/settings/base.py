@@ -12,6 +12,9 @@ SECRET_KEY = env("SECRET_KEY")
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
 
+# How many reverse proxies sit in front of the app (0 when running locally).
+TRUSTED_PROXY_COUNT = env.int("TRUSTED_PROXY_COUNT", default=0)
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
