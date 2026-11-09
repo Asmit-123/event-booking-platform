@@ -24,10 +24,10 @@
           Cancelling cannot be undone, and nobody can register once an event is cancelled.
         </div>
 
-        <form method="post">
+        <form method="post" data-prevent-double-submit>
           {% csrf_token %}
           <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-danger">Yes, cancel event</button>
+            <button type="submit" class="btn btn-danger" data-loading-text="Cancelling...">Yes, cancel event</button>
             <a class="btn btn-outline-secondary" href="{% url 'events:organizer_dashboard' %}">Keep event</a>
           </div>
         </form>

@@ -43,9 +43,9 @@
         {% elif event.seats_left <= 0 %}
           <p class="text-muted mb-0">This event is fully booked.</p>
         {% else %}
-          <form method="post" action="{% url 'registrations:register' event.pk %}">
+          <form method="post" action="{% url 'registrations:register' event.pk %}" data-prevent-double-submit>
             {% csrf_token %}
-            <button type="submit" class="btn btn-primary">Register for this event</button>
+            <button type="submit" class="btn btn-primary btn-lg" data-loading-text="Registering...">Register for this event</button>
           </form>
         {% endif %}
       {% elif user.is_authenticated %}
