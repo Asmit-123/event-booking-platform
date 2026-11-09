@@ -3,27 +3,58 @@
 {% block title %}My registrations | Event Booking{% endblock %}
 
 {% block content %}
-  <h1 class="h3 mb-3">My registrations</h1>
+  <div class="mb-4">
+    <span class="feature-step-pill">Attendee Portal</span>
+    <h1 class="h3 fw-bold mb-1">My registrations</h1>
+    <p class="text-muted mb-0">Track your confirmed seats and past gathering history.</p>
+  </div>
 
   {% if upcoming or earlier %}
-    <h2 class="h5">Upcoming</h2>
-    {% if upcoming %}
-      {% include "registrations/_table.html" with registrations=upcoming %}
-    {% else %}
-      <p class="text-muted">
-        You have no upcoming registrations.
-        <a href="{% url 'events:event_list' %}">Browse events</a>
-      </p>
-    {% endif %}
+    <div class="mb-5">
+      <div class="d-flex align-items-center gap-2 mb-3">
+        <h2 class="h5 fw-bold mb-0">Upcoming</h2>
+        {% if upcoming %}
+          <span class="badge text-bg-success">{{ upcoming|length }} confirmed</span>
+        {% endif %}
+      </div>
+      {% if upcoming %}
+        {% include "registrations/_table.html" with registrations=upcoming %}
+      {% else %}
+        <div class="card p-4 text-center bg-body-tertiary border-0 rounded-3">
+          <p class="text-muted mb-2">
+            You have no upcoming registrations.
+          </p>
+          <div>
+            <a class="btn btn-sm btn-outline-primary" href="{% url 'events:event_list' %}">Browse events</a>
+          </div>
+        </div>
+      {% endif %}
+    </div>
 
     {% if earlier %}
-      <h2 class="h5 mt-4">Cancelled and past</h2>
-      {% include "registrations/_table.html" with registrations=earlier %}
+      <div class="mb-4">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <h2 class="h5 fw-bold mb-0">Cancelled and past</h2>
+          <span class="badge text-bg-secondary">{{ earlier|length }}</span>
+        </div>
+        {% include "registrations/_table.html" with registrations=earlier %}
+      </div>
     {% endif %}
   {% else %}
-    <div class="text-center py-5 bg-white rounded shadow-sm">
-      <p class="text-muted mb-3">You have not registered for any events yet.</p>
-      <a class="btn btn-primary" href="{% url 'events:event_list' %}">Browse upcoming events</a>
+    <div class="empty-state-box">
+      <div class="empty-state-icon" aria-hidden="true">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"></path>
+        </svg>
+      </div>
+      <p class="text-muted fs-5 mb-3">You have not registered for any events yet.</p>
+      <a class="btn btn-primary d-inline-flex align-items-center gap-2" href="{% url 'events:event_list' %}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.3-4.3"></path>
+        </svg>
+        <span>Browse upcoming events</span>
+      </a>
     </div>
   {% endif %}
 {% endblock %}

@@ -4,62 +4,168 @@
 
 {% block content %}
   <section class="text-center py-5 px-3 hero rounded-3 mb-5">
-    <h1 class="display-5 fw-bold">Find an event. Save your seat.</h1>
-    <p class="lead text-muted col-lg-7 mx-auto">
+    <div class="hero-pill">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+      </svg>
+      <span>Live Capacity Engine &middot; Real-Time Reservations</span>
+    </div>
+
+    <h1 class="display-5 fw-bold hero-headline mb-3"><span class="gradient-text">Find an event. Save your seat.</span></h1>
+    <p class="lead text-muted col-lg-7 mx-auto mb-4">
       Organizers publish events with a fixed number of seats. Attendees browse and register in a click.
       Seats are counted carefully, so an event is never overbooked.
     </p>
-    <div class="d-flex flex-wrap gap-2 justify-content-center">
-      <a class="btn btn-primary btn-lg" href="{% url 'events:event_list' %}">Browse events</a>
+
+    <div class="d-flex flex-wrap gap-3 justify-content-center">
+      <a class="btn btn-primary btn-lg d-inline-flex align-items-center gap-2" href="{% url 'events:event_list' %}">
+        <span>Browse events</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14"></path>
+          <path d="m12 5 7 7-7 7"></path>
+        </svg>
+      </a>
       {% if user.is_organizer %}
-        <a class="btn btn-outline-primary btn-lg" href="{% url 'events:event_create' %}">Create an event</a>
+        <a class="btn btn-outline-primary btn-lg d-inline-flex align-items-center gap-2" href="{% url 'events:event_create' %}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          Create an event
+        </a>
       {% elif user.is_attendee %}
-        <a class="btn btn-outline-primary btn-lg" href="{% url 'registrations:my_registrations' %}">My registrations</a>
+        <a class="btn btn-outline-primary btn-lg d-inline-flex align-items-center gap-2" href="{% url 'registrations:my_registrations' %}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"></path>
+          </svg>
+          My registrations
+        </a>
       {% else %}
-        <a class="btn btn-outline-primary btn-lg" href="{% url 'accounts:signup' %}">Sign up free</a>
+        <a class="btn btn-outline-primary btn-lg d-inline-flex align-items-center gap-2" href="{% url 'accounts:signup' %}">
+          <span>Sign up free</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <line x1="19" y1="8" x2="19" y2="14"></line>
+            <line x1="22" y1="11" x2="16" y2="11"></line>
+          </svg>
+        </a>
       {% endif %}
+    </div>
+
+    <div class="hero-trust-bar">
+      <div class="trust-item">
+        <svg class="trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"></path>
+          <path d="m9 12 2 2 4-4"></path>
+        </svg>
+        <span>Zero Overbooking Guarantee</span>
+      </div>
+      <div class="trust-item">
+        <svg class="trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+        <span>Atomic Seat Locking</span>
+      </div>
+      <div class="trust-item">
+        <svg class="trust-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+          <path d="M16 2v4"></path>
+          <path d="M8 2v4"></path>
+          <path d="M3 10h18"></path>
+        </svg>
+        <span>iCalendar (.ics) Sync</span>
+      </div>
     </div>
   </section>
 
   <section class="mb-5" aria-labelledby="how-it-works">
-    <h2 id="how-it-works" class="h4 mb-3">How it works</h2>
-    <div class="row row-cols-1 row-cols-md-3 g-3">
+    <div class="d-flex justify-content-between align-items-baseline mb-4">
+      <div>
+        <span class="feature-step-pill">Streamlined Architecture</span>
+        <h2 id="how-it-works" class="h3 fw-bold mb-0">How it works</h2>
+      </div>
+    </div>
+    
+    <div class="row row-cols-1 row-cols-md-3 g-4">
       <div class="col">
-        <div class="card h-100 shadow-sm"><div class="card-body">
-          <h3 class="h6">1. Organizers publish</h3>
+        <div class="card h-100 feature-card p-4">
+          <div class="feature-icon-box" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+            </svg>
+          </div>
+          <span class="feature-step-pill">Step 01</span>
+          <h3 class="h5 fw-bold mb-2">1. Organizers publish</h3>
           <p class="text-muted mb-0">Create an event with a date, a venue and a seat limit. Edit or cancel it any time before it starts.</p>
-        </div></div>
+        </div>
       </div>
+      
       <div class="col">
-        <div class="card h-100 shadow-sm"><div class="card-body">
-          <h3 class="h6">2. Attendees register</h3>
+        <div class="card h-100 feature-card p-4">
+          <div class="feature-icon-box" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"></path>
+              <path d="M13 5v2"></path>
+              <path d="M13 17v2"></path>
+              <path d="M13 11v2"></path>
+            </svg>
+          </div>
+          <span class="feature-step-pill">Step 02</span>
+          <h3 class="h5 fw-bold mb-2">2. Attendees register</h3>
           <p class="text-muted mb-0">Browse upcoming events, see how many seats are left, and take one. Each person gets one seat per event.</p>
-        </div></div>
+        </div>
       </div>
+      
       <div class="col">
-        <div class="card h-100 shadow-sm"><div class="card-body">
-          <h3 class="h6">3. Seats stay honest</h3>
+        <div class="card h-100 feature-card p-4">
+          <div class="feature-icon-box" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </div>
+          <span class="feature-step-pill">Step 03</span>
+          <h3 class="h5 fw-bold mb-2">3. Seats stay honest</h3>
           <p class="text-muted mb-0">The seat limit is enforced by the server even when many people register at once.</p>
-        </div></div>
+        </div>
       </div>
     </div>
   </section>
 
   <section aria-labelledby="coming-up">
-    <div class="d-flex justify-content-between align-items-baseline mb-3">
-      <h2 id="coming-up" class="h4 mb-0">Coming up</h2>
-      <a href="{% url 'events:event_list' %}">See all events</a>
+    <div class="d-flex justify-content-between align-items-end mb-4">
+      <div>
+        <span class="feature-step-pill">Curated Experiences</span>
+        <h2 id="coming-up" class="h3 fw-bold mb-0">Coming up</h2>
+      </div>
+      <a class="view-details-arrow text-decoration-none" href="{% url 'events:event_list' %}">
+        <span>See all events</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14"></path>
+          <path d="m12 5 7 7-7 7"></path>
+        </svg>
+      </a>
     </div>
 
     {% if featured %}
-      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         {% for event in featured %}
           {% include "events/_event_card.html" %}
         {% endfor %}
       </div>
     {% else %}
-      <div class="text-center py-5 bg-body rounded shadow-sm">
-        <p class="text-muted mb-0">There are no upcoming events right now. Please check back soon.</p>
+      <div class="empty-state-box">
+        <div class="empty-state-icon" aria-hidden="true">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+            <path d="M16 2v4"></path>
+            <path d="M8 2v4"></path>
+            <path d="M3 10h18"></path>
+          </svg>
+        </div>
+        <p class="text-muted fs-5 mb-0">There are no upcoming events right now. Please check back soon.</p>
       </div>
     {% endif %}
   </section>

@@ -11,9 +11,21 @@
 <body class="bg-body-tertiary d-flex flex-column min-vh-100">
   <a class="visually-hidden-focusable" href="#main">Skip to main content</a>
 
-  <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark" aria-label="Main navigation">
+  <nav class="navbar navbar-expand-lg bg-dark app-navbar" data-bs-theme="dark" aria-label="Main navigation">
     <div class="container">
-      <a class="navbar-brand" href="{% url 'events:home' %}">Event Booking</a>
+      <a class="navbar-brand brand-wrapper" href="{% url 'events:home' %}">
+        <div class="brand-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+            <path d="M16 2v4"></path>
+            <path d="M8 2v4"></path>
+            <path d="M3 10h18"></path>
+            <path d="m9 16 2 2 4-4"></path>
+          </svg>
+        </div>
+        <span class="brand-text">Event Booking<span class="brand-dot">.</span></span>
+      </a>
+
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
               aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -21,36 +33,59 @@
 
       <div class="collapse navbar-collapse" id="mainNav">
         {% with path=request.path %}
-        <ul class="navbar-nav me-auto">
+        <ul class="navbar-nav me-auto ps-lg-3 gap-1">
           <li class="nav-item">
-            <a class="nav-link{% if path|slice:':8' == '/events/' %} active{% endif %}"{% if path|slice:':8' == '/events/' %} aria-current="page"{% endif %} href="{% url 'events:event_list' %}">Browse events</a>
+            <a class="nav-link{% if path|slice:':8' == '/events/' %} active{% endif %}"{% if path|slice:':8' == '/events/' %} aria-current="page"{% endif %} href="{% url 'events:event_list' %}">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1" aria-hidden="true">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.3-4.3"></path>
+              </svg>
+              Browse events
+            </a>
           </li>
           {% if user.is_organizer %}
             <li class="nav-item">
-              <a class="nav-link{% if path|slice:':11' == '/organizer/' %} active{% endif %}"{% if path|slice:':11' == '/organizer/' %} aria-current="page"{% endif %} href="{% url 'events:organizer_dashboard' %}">Dashboard</a>
+              <a class="nav-link{% if path|slice:':11' == '/organizer/' %} active{% endif %}"{% if path|slice:':11' == '/organizer/' %} aria-current="page"{% endif %} href="{% url 'events:organizer_dashboard' %}">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1" aria-hidden="true">
+                  <rect width="7" height="9" x="3" y="3" rx="1"></rect>
+                  <rect width="7" height="5" x="14" y="3" rx="1"></rect>
+                  <rect width="7" height="9" x="14" y="12" rx="1"></rect>
+                  <rect width="7" height="5" x="3" y="16" rx="1"></rect>
+                </svg>
+                Dashboard
+              </a>
             </li>
           {% elif user.is_attendee %}
             <li class="nav-item">
-              <a class="nav-link{% if path == '/my-registrations/' %} active{% endif %}"{% if path == '/my-registrations/' %} aria-current="page"{% endif %} href="{% url 'registrations:my_registrations' %}">My registrations</a>
+              <a class="nav-link{% if path == '/my-registrations/' %} active{% endif %}"{% if path == '/my-registrations/' %} aria-current="page"{% endif %} href="{% url 'registrations:my_registrations' %}">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1" aria-hidden="true">
+                  <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"></path>
+                  <path d="M13 5v2"></path>
+                  <path d="M13 17v2"></path>
+                  <path d="M13 11v2"></path>
+                </svg>
+                My registrations
+              </a>
             </li>
           {% endif %}
         </ul>
         {% endwith %}
 
-        <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-2 text-white">
-          <button type="button" id="theme-toggle" class="btn btn-outline-light btn-sm" aria-pressed="false">Dark mode</button>
+        <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-2 text-white mt-3 mt-lg-0">
+          <button type="button" id="theme-toggle" class="btn btn-outline-light btn-sm d-inline-flex align-items-center" aria-pressed="false">Dark mode</button>
           {% if user.is_authenticated %}
-            <span>
-              {{ user.get_full_name }}
+            <div class="user-badge">
+              <span class="user-avatar" aria-hidden="true">{{ user.first_name|default:user.username|slice:":1"|upper }}</span>
+              <span>{{ user.get_full_name|default:user.username }}</span>
               <span class="badge text-bg-secondary">{{ user.get_role_display }}</span>
-            </span>
+            </div>
             <form method="post" action="{% url 'accounts:logout' %}" class="d-inline">
               {% csrf_token %}
               <button type="submit" class="btn btn-outline-light btn-sm">Log out</button>
             </form>
           {% else %}
             <a class="btn btn-outline-light btn-sm" href="{% url 'accounts:login' %}">Log in</a>
-            <a class="btn btn-light btn-sm" href="{% url 'accounts:signup' %}">Sign up</a>
+            <a class="btn btn-primary btn-sm" href="{% url 'accounts:signup' %}">Sign up</a>
           {% endif %}
         </div>
       </div>
@@ -59,9 +94,16 @@
 
   <main id="main" class="container py-4 flex-grow-1" tabindex="-1">
     {% for message in messages %}
-      <div class="alert alert-{{ message.tags }} alert-dismissible fade show"
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show d-flex align-items-center"
            role="{% if message.tags == 'danger' %}alert{% else %}status{% endif %}">
-        {{ message }}
+        {% if message.tags == 'success' %}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2 text-success flex-shrink-0" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        {% elif message.tags == 'danger' or message.tags == 'error' %}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2 text-danger flex-shrink-0" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        {% else %}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2 text-primary flex-shrink-0" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+        {% endif %}
+        <div class="flex-grow-1">{{ message }}</div>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
     {% endfor %}
@@ -69,9 +111,17 @@
     {% block content %}{% endblock %}
   </main>
 
-  <footer class="border-top bg-body py-3 mt-auto">
-    <div class="container small text-muted">
-      Event Booking &middot; a demo project &middot; all data shown is made up.
+  <footer class="app-footer mt-auto">
+    <div class="container">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+        <div class="d-flex align-items-center gap-2">
+          <span class="status-indicator-dot" aria-hidden="true"></span>
+          <span class="small text-muted">Seats counted in real-time &middot; Live verification</span>
+        </div>
+        <div class="small text-muted text-center text-md-end">
+          Event Booking &middot; a demo project &middot; all data shown is made up.
+        </div>
+      </div>
     </div>
   </footer>
 

@@ -3,21 +3,31 @@
 {% block title %}Log in | Event Booking{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
+<div class="row justify-content-center py-4">
   <div class="col-md-8 col-lg-5">
-    <div class="card shadow-sm">
-      <div class="card-body p-4">
-        <h1 class="h4 mb-3">Log in</h1>
+    <div class="card shadow-lg">
+      <div class="card-body p-4 p-md-5">
+        <div class="text-center mb-4">
+          <div class="brand-icon mx-auto mb-3" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+              <polyline points="10 17 15 12 10 7"></polyline>
+              <line x1="15" y1="12" x2="3" y2="12"></line>
+            </svg>
+          </div>
+          <h1 class="h3 fw-bold mb-1">Log in</h1>
+          <p class="text-muted small mb-0">Sign in to your Event Booking account</p>
+        </div>
 
         <form method="post" novalidate data-prevent-double-submit>
           {% csrf_token %}
           <input type="hidden" name="next" value="{{ next }}">
           {% include "includes/form_body.html" %}
-          <button type="submit" class="btn btn-primary w-100" data-loading-text="Logging in...">Log in</button>
+          <button type="submit" class="btn btn-primary btn-lg w-100 mt-2" data-loading-text="Logging in...">Log in</button>
         </form>
 
-        <p class="text-center text-muted small mt-3 mb-0">
-          No account yet? <a href="{% url 'accounts:signup' %}">Sign up</a>
+        <p class="text-center text-muted small mt-4 mb-0">
+          No account yet? <a class="fw-semibold" href="{% url 'accounts:signup' %}">Sign up</a>
         </p>
       </div>
     </div>

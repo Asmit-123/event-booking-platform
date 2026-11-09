@@ -3,62 +3,134 @@
 {% block title %}{{ event.title }} | Event Booking{% endblock %}
 
 {% block content %}
-  <a class="small text-decoration-none" href="{% url 'events:event_list' %}">&larr; All events</a>
+  <a class="small text-decoration-none d-inline-flex align-items-center gap-1 mb-3 text-muted" href="{% url 'events:event_list' %}">
+    &larr; All events
+  </a>
 
-  <div class="card shadow-sm mt-2">
-    <div class="card-body p-4">
-      <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
-        <h1 class="h3 mb-0">{{ event.title }}</h1>
-        {% include "events/_availability_badge.html" %}
+  <div class="card shadow-sm border-0 mb-4 overflow-hidden">
+    <div class="event-hero-banner">
+      <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+        <div>
+          <span class="feature-step-pill">Event Details</span>
+          <h1 class="h2 fw-bold mb-2">{{ event.title }}</h1>
+          <p class="text-muted mb-0">
+            Hosted by <strong>{{ event.organizer.get_full_name }}</strong>
+          </p>
+        </div>
+        <div class="pt-1">
+          {% include "events/_availability_badge.html" %}
+        </div>
       </div>
+    </div>
 
-      <dl class="row mb-4">
-        <dt class="col-sm-3">Date and time</dt>
-        <dd class="col-sm-9">{{ event.start_datetime|date:"l, d F Y, H:i" }}</dd>
+    <div class="card-body p-4">
+      <div class="row g-4">
+        <!-- Main details column -->
+        <div class="col-lg-7">
+          <div class="card bg-body-tertiary border-0 p-3 mb-4 rounded-3">
+            <dl class="row mb-0 gy-2">
+              <dt class="col-sm-4 text-muted small text-uppercase">Date and time</dt>
+              <dd class="col-sm-8 fw-semibold mb-0">{{ event.start_datetime|date:"l, d F Y, H:i" }}</dd>
 
-        <dt class="col-sm-3">Venue</dt>
-        <dd class="col-sm-9">{{ event.venue }}</dd>
+              <dt class="col-sm-4 text-muted small text-uppercase">Venue</dt>
+              <dd class="col-sm-8 fw-semibold mb-0">{{ event.venue }}</dd>
 
-        <dt class="col-sm-3">Hosted by</dt>
-        <dd class="col-sm-9">{{ event.organizer.get_full_name }}</dd>
+              <dt class="col-sm-4 text-muted small text-uppercase">Hosted by</dt>
+              <dd class="col-sm-8 fw-semibold mb-0">{{ event.organizer.get_full_name }}</dd>
 
-        <dt class="col-sm-3">Seats</dt>
-        <dd class="col-sm-9">
-          {{ event.seats_taken }} of {{ event.seat_limit }} taken
-          {% if event.seats_left > 0 %}({{ event.seats_left }} left){% endif %}
-        </dd>
-      </dl>
+              <dt class="col-sm-4 text-muted small text-uppercase">Seats</dt>
+              <dd class="col-sm-8 fw-semibold mb-0">
+                {{ event.seats_taken }} of {{ event.seat_limit }} taken
+                {% if event.seats_left > 0 %}({{ event.seats_left }} left){% endif %}
+              </dd>
+            </dl>
+          </div>
 
-      <h2 class="h6">About this event</h2>
-      {{ event.description|linebreaks }}
-      {% if not event.is_cancelled %}
-        <a class="btn btn-sm btn-outline-secondary mb-3" href="{% url 'events:event_calendar' event.pk %}">Add to calendar (.ics)</a>
-      {% endif %}
-      <hr>
+          <h2 class="h5 fw-bold mb-3">About this event</h2>
+          <div class="text-muted lh-base mb-4">
+            {{ event.description|linebreaks }}
+          </div>
 
-      {% if user.is_authenticated and user.is_attendee %}
-        {% if is_registered %}
-          <div class="alert alert-success mb-0">You are registered for this event.</div>
-        {% elif event.is_cancelled %}
-          <p class="text-muted mb-0">This event has been cancelled, so registration is closed.</p>
-        {% elif event.is_past %}
-          <p class="text-muted mb-0">This event has already started, so registration is closed.</p>
-        {% elif event.seats_left <= 0 %}
-          <p class="text-muted mb-0">This event is fully booked.</p>
-        {% else %}
-          <form method="post" action="{% url 'registrations:register' event.pk %}" data-prevent-double-submit>
-            {% csrf_token %}
-            <button type="submit" class="btn btn-primary btn-lg" data-loading-text="Registering...">Register for this event</button>
-          </form>
-        {% endif %}
-      {% elif user.is_authenticated %}
-        <p class="text-muted mb-0">Organizer accounts cannot register for events.</p>
-      {% else %}
-        <p class="mb-0">
-          <a href="{% url 'accounts:login' %}?next={{ request.path|urlencode }}">Log in</a> or
-          <a href="{% url 'accounts:signup' %}">sign up</a> as an attendee to register.
-        </p>
-      {% endif %}
+          {% if not event.is_cancelled %}
+            <div class="pt-2">
+              <a class="btn btn-outline-secondary d-inline-flex align-items-center gap-2" href="{% url 'events:event_calendar' event.pk %}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+                  <path d="M16 2v4"></path>
+                  <path d="M8 2v4"></path>
+                  <path d="M3 10h18"></path>
+                </svg>
+                Add to calendar (.ics)
+              </a>
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Sticky reservation sidebar -->
+        <div class="col-lg-5">
+          <div class="card booking-card-sticky">
+            <div class="booking-header">
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="fw-bold fs-6">Seat Reservation</span>
+                <span class="badge text-bg-secondary">
+                  <span class="status-indicator-dot me-1" aria-hidden="true"></span>
+                  Live
+                </span>
+              </div>
+            </div>
+
+            <div class="card-body p-4">
+              <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-baseline mb-1">
+                  <span class="text-muted small">Capacity</span>
+                  <span class="fw-bold">{{ event.seats_taken }} of {{ event.seat_limit }} taken</span>
+                </div>
+                <progress class="event-fill mb-2" value="{{ event.seats_taken }}" max="{{ event.seat_limit }}" aria-hidden="true"></progress>
+                {% if event.seats_left > 0 %}
+                  <div class="small text-success fw-semibold">{{ event.seats_left }} left</div>
+                {% endif %}
+              </div>
+
+              {% if user.is_authenticated and user.is_attendee %}
+                {% if is_registered %}
+                  <div class="alert alert-success d-flex align-items-center gap-2 mb-0" role="status">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0" aria-hidden="true">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <span>You are registered for this event.</span>
+                  </div>
+                {% elif event.is_cancelled %}
+                  <p class="text-muted mb-0">This event has been cancelled, so registration is closed.</p>
+                {% elif event.is_past %}
+                  <p class="text-muted mb-0">This event has already started, so registration is closed.</p>
+                {% elif event.seats_left <= 0 %}
+                  <p class="text-muted mb-0">This event is fully booked.</p>
+                {% else %}
+                  <form method="post" action="{% url 'registrations:register' event.pk %}" data-prevent-double-submit>
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary btn-lg w-100 d-inline-flex align-items-center justify-content-center gap-2" data-loading-text="Registering...">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"></path>
+                      </svg>
+                      Register for this event
+                    </button>
+                  </form>
+                {% endif %}
+              {% elif user.is_authenticated %}
+                <p class="text-muted mb-0">Organizer accounts cannot register for events.</p>
+              {% else %}
+                <div class="text-center p-3 bg-body-tertiary rounded-3">
+                  <p class="mb-0">
+                    <a class="fw-semibold" href="{% url 'accounts:login' %}?next={{ request.path|urlencode }}">Log in</a> or
+                    <a class="fw-semibold" href="{% url 'accounts:signup' %}">sign up</a> as an attendee to register.
+                  </p>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 {% endblock %}

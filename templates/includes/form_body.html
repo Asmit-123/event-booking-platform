@@ -1,6 +1,13 @@
 {% if form.non_field_errors %}
-  <div class="alert alert-danger" role="alert">
-    {% for error in form.non_field_errors %}<div>{{ error }}</div>{% endfor %}
+  <div class="alert alert-danger d-flex align-items-center gap-2 mb-3" role="alert">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0" aria-hidden="true">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="8" x2="12" y2="12"></line>
+      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+    </svg>
+    <div>
+      {% for error in form.non_field_errors %}<div>{{ error }}</div>{% endfor %}
+    </div>
   </div>
 {% endif %}
 
@@ -8,13 +15,39 @@
   <div class="mb-3">
     {% if field.widget_type == "radioselect" %}
       <fieldset>
-        <legend class="form-label fs-6">{{ field.label }}</legend>
-        {% for radio in field %}
-          <div class="form-check">
-            {{ radio.tag }}
-            <label class="form-check-label" for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
-          </div>
-        {% endfor %}
+        <legend class="form-label fs-6 mb-2">{{ field.label }}</legend>
+        <div class="role-radio-group mb-2">
+          {% for radio in field %}
+            <label class="role-radio-card form-check" for="{{ radio.id_for_label }}">
+              {{ radio.tag }}
+              <div class="role-card-inner">
+                <div class="role-icon-box" aria-hidden="true">
+                  {% if radio.choice_label == "Organizer" %}
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+                      <path d="M16 2v4"></path>
+                      <path d="M8 2v4"></path>
+                      <path d="M3 10h18"></path>
+                    </svg>
+                  {% else %}
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="9" cy="7" r="4"></circle>
+                    </svg>
+                  {% endif %}
+                </div>
+                <div class="role-title form-check-label">{{ radio.choice_label }}</div>
+                <p class="role-desc">
+                  {% if radio.choice_label == "Organizer" %}
+                    Create events, configure limits and manage attendees.
+                  {% else %}
+                    Discover gatherings and reserve seats in one click.
+                  {% endif %}
+                </p>
+              </div>
+            </label>
+          {% endfor %}
+        </div>
       </fieldset>
     {% else %}
       <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
