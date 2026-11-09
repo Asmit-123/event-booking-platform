@@ -31,6 +31,9 @@
 
       <h2 class="h6">About this event</h2>
       {{ event.description|linebreaks }}
+      {% if not event.is_cancelled %}
+        <a class="btn btn-sm btn-outline-secondary mb-3" href="{% url 'events:event_calendar' event.pk %}">Add to calendar (.ics)</a>
+      {% endif %}
       <hr>
 
       {% if user.is_authenticated and user.is_attendee %}

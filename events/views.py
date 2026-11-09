@@ -13,6 +13,10 @@ from . import exports, selectors, services
 from .forms import EventForm, EventSearchForm
 from .models import Event
 
+from django.urls import reverse
+
+from . import exports, ics, selectors, services
+
 EVENTS_PER_PAGE = 9
 
 def home(request):
@@ -131,4 +135,12 @@ def event_attendees_csv(request, pk):
     response = HttpResponse(content_type="text/csv; charset=utf-8")
     response["Content-Disposition"] = f'attachment; filename="attendees-event-{event.pk}.csv"'
     exports.write_attendees_csv(response, selectors.event_registrations(event))
+    return response
+
+@require_GET
+def event_calendar(request, pk):
+    event = get_object_or_404(Event, pk=pk, status=Event.Status.ACTIVE)
+    url = request.build_absolute_uri(reverse("events:event_detail", args=[event.pk]))
+    response = HttpResponse(ics.build_ics(event, url), content_type="text/calendar; charset=utf-8")
+    response["Content-Disposition"] = f'attachment; filename="event-{event.pk}.ics"'
     return response
