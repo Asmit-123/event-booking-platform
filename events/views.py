@@ -5,8 +5,12 @@ from django.core.paginator import Paginator
 
 from accounts.permissions import organizer_required
 
-from . import selectors, services
-from .forms import EventForm
+from django.http import HttpResponse
+from django.views.decorators.cache import never_cache
+from django.views.decorators.http import require_GET
+
+from . import exports, selectors, services
+from .forms import EventForm, EventSearchForm
 from .models import Event
 
 EVENTS_PER_PAGE = 9
@@ -93,10 +97,22 @@ def event_attendees(request, pk):
     return render(request, "events/event_attendees.html", context)
 
 def event_list(request):
-    paginator = Paginator(selectors.upcoming_events(), EVENTS_PER_PAGE)
-    page = paginator.get_page(request.GET.get("page"))
-    return render(request, "events/event_list.html", {"page": page})
+    form = EventSearchForm(request.GET)
+    events = selectors.upcoming_events()
+    has_filters = False
 
+    if form.is_valid():
+        data = form.cleaned_data
+        events = selectors.search_events(events, data["q"])
+        events = selectors.filter_by_date_range(events, data["date_from"], data["date_to"])
+        if data["available_only"]:
+            events = selectors.only_with_seats(events)
+        has_filters = any(data.values())
+
+    paginator = Paginator(events, EVENTS_PER_PAGE)
+    page = paginator.get_page(request.GET.get("page"))
+    context = {"page": page, "form": form, "has_filters": has_filters}
+    return render(request, "events/event_list.html", context)
 
 def event_detail(request, pk):
     event = get_object_or_404(selectors.events_with_seats(), pk=pk)
@@ -106,3 +122,13 @@ def event_detail(request, pk):
     )
     context = {"event": event, "is_registered": is_registered}
     return render(request, "events/event_detail.html", context)
+
+@organizer_required
+@require_GET
+@never_cache
+def event_attendees_csv(request, pk):
+    event = get_object_or_404(Event, pk=pk, organizer=request.user)
+    response = HttpResponse(content_type="text/csv; charset=utf-8")
+    response["Content-Disposition"] = f'attachment; filename="attendees-event-{event.pk}.csv"'
+    exports.write_attendees_csv(response, selectors.event_registrations(event))
+    return response

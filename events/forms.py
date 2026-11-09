@@ -1,4 +1,7 @@
 from django import forms
+from datetime import date
+
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 from accounts.forms import BootstrapFormMixin
 
@@ -32,3 +35,50 @@ class EventForm(BootstrapFormMixin, forms.ModelForm):
         start_datetime = self.cleaned_data["start_datetime"]
         validate_start_in_future(start_datetime)
         return start_datetime
+    
+FILTER_MIN_DATE = date(2000, 1, 1)
+FILTER_MAX_DATE = date(2100, 12, 31)
+
+
+def _date_filter_field(label):
+    return forms.DateField(
+        required=False,
+        label=label,
+        validators=[MinValueValidator(FILTER_MIN_DATE), MaxValueValidator(FILTER_MAX_DATE)],
+        widget=forms.DateInput(attrs={"type": "date", "class": "form-control"}),
+    )
+
+
+class EventSearchForm(forms.Form):
+    """Validates the filters on the public event list (read from the query string)."""
+
+    q = forms.CharField(
+        required=False,
+        max_length=100,
+        label="Search events",
+        widget=forms.TextInput(
+            attrs={
+                "type": "search",
+                "class": "form-control",
+                "placeholder": "Search by title, venue or keyword",
+            }
+        ),
+    )
+    date_from = _date_filter_field("From")
+    date_to = _date_filter_field("To")
+    
+    available_only = forms.BooleanField(
+        required=False,
+        label="Only show events with seats left",
+        widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
+    )
+
+    def clean(self):
+        cleaned = super().clean()
+        date_from = cleaned.get("date_from")
+        date_to = cleaned.get("date_to")
+        if date_from and date_to and date_to < date_from:
+            self.add_error("date_to", "The end date cannot be before the start date.")
+        return cleaned
+    
+    

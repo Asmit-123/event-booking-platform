@@ -13,4 +13,5 @@ urlpatterns = [
     path("organizer/events/<int:pk>/attendees/", views.event_attendees, name="event_attendees"),
     path("events/", views.event_list, name="event_list"),
     path("events/<int:pk>/", views.event_detail, name="event_detail"),
+    path("organizer/events/<int:pk>/attendees/export.csv", views.event_attendees_csv, name="event_attendees_csv"),
 ]
