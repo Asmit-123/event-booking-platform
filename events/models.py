@@ -1,9 +1,10 @@
 from django.conf import settings
-from django.core.validators import MinValueValidator
+from django.core.validators import MaxLengthValidator, MinValueValidator
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 
+DESCRIPTION_MAX_LENGTH = 5000
 
 class Event(models.Model):
     """An event published by an organizer, with a fixed number of seats."""
@@ -18,7 +19,10 @@ class Event(models.Model):
         related_name="organized_events",
     )
     title = models.CharField(max_length=200)
-    description = models.TextField()
+    description = models.TextField(
+        max_length=DESCRIPTION_MAX_LENGTH,
+        validators=[MaxLengthValidator(DESCRIPTION_MAX_LENGTH)],
+    )
     venue = models.CharField(max_length=255)
     start_datetime = models.DateTimeField()
     seat_limit = models.PositiveIntegerField(validators=[MinValueValidator(1)])
