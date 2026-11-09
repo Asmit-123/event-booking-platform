@@ -6,7 +6,7 @@ from django.views.decorators.http import require_POST
 from accounts.permissions import attendee_required
 from events.models import Event
 
-from . import selectors, services
+from . import emails, selectors, services
 
 
 @attendee_required
@@ -22,10 +22,11 @@ def register(request, pk):
     event = get_object_or_404(Event, pk=pk)
 
     try:
-        services.register_for_event(request.user, event.pk)
+        registration = services.register_for_event(request.user, event.pk)
     except ValidationError as error:
         messages.error(request, " ".join(error.messages))
     else:
+        emails.send_registration_confirmation(registration)
         messages.success(request, f"You are registered for \u201c{event.title}\u201d.")
 
     return redirect("events:event_detail", pk=event.pk)
