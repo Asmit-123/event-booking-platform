@@ -37,7 +37,7 @@ def event_create(request):
         form = EventForm(request.POST)
         if form.is_valid():
             try:
-                event = services.create_event(request.user, **form.cleaned_data)
+                data = form.cleaned_data.copy()\n                data.pop("use_registration_deadline", None)\n                event = services.create_event(request.user, **data)
             except ValidationError as error:
                 form.add_error(None, error)
             else:
@@ -62,7 +62,7 @@ def event_edit(request, pk):
         form = EventForm(request.POST, instance=event)
         if form.is_valid():
             try:
-                updated = services.update_event(request.user, event.pk, **form.cleaned_data)
+                data = form.cleaned_data.copy()\n                data.pop("use_registration_deadline", None)\n                updated = services.update_event(request.user, event.pk, **data)
             except ValidationError as error:
                 form.add_error(None, error)
             else:
