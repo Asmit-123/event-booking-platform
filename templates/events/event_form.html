@@ -15,7 +15,29 @@
 
         <form method="post" novalidate data-prevent-double-submit>
           {% csrf_token %}
+          {% if form.use_registration_deadline.errors %}
+            <div class="text-danger small mb-2">{{ form.use_registration_deadline.errors }}</div>
+          {% endif %}
+          <div class="form-check mb-3">
+            {{ form.use_registration_deadline }}
+            <label class="form-check-label fw-semibold" for="{{ form.use_registration_deadline.id_for_label }}">{{ form.use_registration_deadline.label }}</label>
+            <div class="form-text">Optional. Choose this to automatically close attendee registration before the event starts.</div>
+          </div>
           {% include "includes/form_body.html" %}
+          <script>
+            document.addEventListener("DOMContentLoaded", function () {
+              const toggle = document.getElementById("{{ form.use_registration_deadline.id_for_label }}");
+              const deadline = document.getElementById("{{ form.registration_deadline.id_for_label }}");
+              if (!toggle || !deadline) return;
+              const syncDeadline = () => {
+                deadline.disabled = !toggle.checked;
+                deadline.required = toggle.checked;
+                if (!toggle.checked) deadline.value = "";
+              };
+              toggle.addEventListener("change", syncDeadline);
+              syncDeadline();
+            });
+          </script>
 
           <div class="d-flex gap-3 pt-3">
             <button type="submit" class="btn btn-primary btn-lg flex-grow-1" data-loading-text="Saving...">{{ submit_label }}</button>
