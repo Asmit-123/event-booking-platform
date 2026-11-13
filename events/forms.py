@@ -48,6 +48,13 @@ class EventForm(BootstrapFormMixin, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.order_fields([
+            "title", "description", "venue", "start_datetime",
+            "use_registration_deadline", "registration_deadline", "seat_limit",
+        ])
+        self.fields["use_registration_deadline"].help_text = (
+            "Optional. Enable this to automatically close attendee registration before the event starts."
+        )
         if self.instance and self.instance.pk and self.instance.registration_deadline:
             self.initial["use_registration_deadline"] = True
             self.fields["registration_deadline"].widget.attrs.pop("disabled", None)
