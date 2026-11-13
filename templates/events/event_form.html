@@ -16,24 +16,6 @@
         <form method="post" novalidate data-prevent-double-submit>
           {% csrf_token %}
           {% include "includes/form_body.html" %}
-          <script>
-            (() => {
-              // This script is placed immediately after the rendered fields, so
-              // query them directly instead of waiting for DOMContentLoaded.
-              const toggle = document.querySelector('input[name="use_registration_deadline"]');
-              const deadline = document.querySelector('input[name="registration_deadline"]');
-              if (!toggle || !deadline) return;
-
-              const syncDeadline = () => {
-                deadline.toggleAttribute("disabled", !toggle.checked);
-                deadline.required = toggle.checked;
-                if (!toggle.checked) deadline.value = "";
-              };
-
-              toggle.addEventListener("change", syncDeadline);
-              syncDeadline();
-            })();
-          </script>
 
           <div class="d-flex gap-3 pt-3">
             <button type="submit" class="btn btn-primary btn-lg flex-grow-1" data-loading-text="Saving...">{{ submit_label }}</button>
