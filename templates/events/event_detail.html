@@ -1,7 +1,26 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}{{ event.title }} | Event Booking{% endblock %}
+{% block title %}{{ event.title }} | Event Booking  {% if event.registration_deadline %}
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const timer = document.querySelector(".registration-countdown");
+        if (!timer) return;
+        const update = () => {
+          const remaining = new Date(timer.dataset.deadline).getTime() - Date.now();
+          if (remaining <= 0) { timer.textContent = "Closed"; return; }
+          const days = Math.floor(remaining / 86400000);
+          const hours = Math.floor((remaining % 86400000) / 3600000);
+          const minutes = Math.floor((remaining % 3600000) / 60000);
+          const seconds = Math.floor((remaining % 60000) / 1000);
+          timer.textContent = days ? `${days}d ${hours}h ${minutes}m` : `${hours}h ${minutes}m ${seconds}s`;
+        };
+        update();
+        window.setInterval(update, 1000);
+      });
+    </script>
+  {% endif %}
+{% endblock %}
 
 {% block content %}
   <a class="small text-decoration-none d-inline-flex align-items-center gap-1 mb-3 text-muted" href="{% url 'events:event_list' %}">
@@ -50,6 +69,13 @@
               <dt class="col-sm-4 text-muted small text-uppercase">Date and time</dt>
               <dd class="col-sm-8 fw-semibold mb-0">{{ event.start_datetime|date:"l, d F Y, H:i" }}</dd>
 
+              {% if event.registration_deadline %}
+                <dt class="col-sm-4 text-muted small text-uppercase">Registration closes</dt>
+                <dd class="col-sm-8 fw-semibold mb-0">
+                  {{ event.registration_deadline|date:"l, d F Y, H:i" }}
+                  <span class="d-block small text-warning-emphasis mt-1">Time remaining: <span class="registration-countdown" data-deadline="{{ event.registration_deadline|date:'c' }}">Calculating…</span></span>
+                </dd>
+              {% endif %}
               <dt class="col-sm-4 text-muted small text-uppercase">Venue</dt>
               <dd class="col-sm-8 fw-semibold mb-0">{{ event.venue }}</dd>
 
@@ -120,7 +146,7 @@
                   </div>
                 {% elif event.is_cancelled %}
                   <p class="text-muted mb-0">This event has been cancelled, so registration is closed.</p>
-                {% elif event.is_past %}
+                {% elif event.is_registration_closed %}\n                  <p class="text-muted mb-0">Registration for this event has closed.</p>\n                {% elif event.is_past %}
                   <p class="text-muted mb-0">This event has already started, so registration is closed.</p>
                 {% elif event.seats_left <= 0 %}
                   <p class="text-muted mb-0">This event is fully booked.</p>
