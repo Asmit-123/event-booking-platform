@@ -15,14 +15,6 @@
 
         <form method="post" novalidate data-prevent-double-submit>
           {% csrf_token %}
-          {% if form.use_registration_deadline.errors %}
-            <div class="text-danger small mb-2">{{ form.use_registration_deadline.errors }}</div>
-          {% endif %}
-          <div class="form-check mb-3">
-            {{ form.use_registration_deadline }}
-            <label class="form-check-label fw-semibold" for="{{ form.use_registration_deadline.id_for_label }}">{{ form.use_registration_deadline.label }}</label>
-            <div class="form-text">Optional. Choose this to automatically close attendee registration before the event starts.</div>
-          </div>
           {% include "includes/form_body.html" %}
           <script>
             document.addEventListener("DOMContentLoaded", function () {
