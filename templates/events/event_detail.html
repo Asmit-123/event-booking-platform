@@ -146,7 +146,9 @@
                   </div>
                 {% elif event.is_cancelled %}
                   <p class="text-muted mb-0">This event has been cancelled, so registration is closed.</p>
-                {% elif event.is_registration_closed %}\n                  <p class="text-muted mb-0">Registration for this event has closed.</p>\n                {% elif event.is_past %}
+                {% elif event.is_registration_closed %}
+                  <p class="text-muted mb-0">Registration for this event has closed.</p>
+                {% elif event.is_past %}
                   <p class="text-muted mb-0">This event has already started, so registration is closed.</p>
                 {% elif event.seats_left <= 0 %}
                   <p class="text-muted mb-0">This event is fully booked.</p>
