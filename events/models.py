@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxLengthValidator, MinValueValidator
 from django.db import models
 from django.db.models import Q
@@ -25,6 +26,11 @@ class Event(models.Model):
     )
     venue = models.CharField(max_length=255)
     start_datetime = models.DateTimeField()
+    registration_deadline = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Optional deadline for attendee registration.",
+    )
     seat_limit = models.PositiveIntegerField(validators=[MinValueValidator(1)])
     status = models.CharField(
         max_length=10,
@@ -48,6 +54,24 @@ class Event(models.Model):
                 name="event_status_start_idx",
             ),
         ]
+
+    def clean(self):
+        super().clean()
+        if (
+            self.registration_deadline
+            and self.start_datetime
+            and self.registration_deadline >= self.start_datetime
+        ):
+            raise ValidationError({
+                "registration_deadline": "The registration deadline must be before the event start time."
+            })
+
+    @property
+    def is_registration_closed(self):
+        return bool(
+            self.registration_deadline
+            and self.registration_deadline <= timezone.now()
+        )
 
     @property
     def is_cancelled(self):

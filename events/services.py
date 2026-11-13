@@ -5,12 +5,20 @@ from .models import Event
 from .validators import validate_start_in_future
 
 
-def create_event(organizer, *, title, description, venue, start_datetime, seat_limit):
+def validate_registration_deadline(registration_deadline, start_datetime):
+    if registration_deadline and registration_deadline >= start_datetime:
+        raise ValidationError({
+            "registration_deadline": "The registration deadline must be before the event start time."
+        })
+
+
+def create_event(organizer, *, title, description, venue, start_datetime, seat_limit, registration_deadline=None):
     """Create an event owned by the given organizer, enforcing the business rules."""
     if not organizer.is_organizer:
         raise PermissionDenied("Only organizers can create events.")
 
     validate_start_in_future(start_datetime)
+    validate_registration_deadline(registration_deadline, start_datetime)
 
     event = Event(
         organizer=organizer,
@@ -18,6 +26,7 @@ def create_event(organizer, *, title, description, venue, start_datetime, seat_l
         description=description,
         venue=venue,
         start_datetime=start_datetime,
+        registration_deadline=registration_deadline,
         seat_limit=seat_limit,
     )
     event.full_clean()
@@ -26,7 +35,7 @@ def create_event(organizer, *, title, description, venue, start_datetime, seat_l
 
 
 @transaction.atomic
-def update_event(organizer, event_id, *, title, description, venue, start_datetime, seat_limit):
+def update_event(organizer, event_id, *, title, description, venue, start_datetime, seat_limit, registration_deadline=None):
     """Update an event, enforcing ownership, date and capacity rules under a row lock."""
     event = Event.objects.select_for_update().get(pk=event_id)
 
@@ -38,6 +47,7 @@ def update_event(organizer, event_id, *, title, description, venue, start_dateti
         raise ValidationError("A past event cannot be edited.")
 
     validate_start_in_future(start_datetime)
+    validate_registration_deadline(registration_deadline, start_datetime)
 
     registered = event.registrations.count()
     if seat_limit < registered:
@@ -54,10 +64,12 @@ def update_event(organizer, event_id, *, title, description, venue, start_dateti
     event.description = description
     event.venue = venue
     event.start_datetime = start_datetime
+    event.registration_deadline = registration_deadline
     event.seat_limit = seat_limit
     event.full_clean()
     event.save()
     return event
+
 
 @transaction.atomic
 def cancel_event(organizer, event_id):
