@@ -50,6 +50,12 @@
         <span>Hosted by {{ event.organizer.get_full_name }}</span>
       </div>
 
+      {% if event.registration_deadline %}
+        <div class="small fw-semibold text-warning-emphasis mb-3" aria-live="off">
+          Registration closes in
+          <span class="registration-countdown" data-deadline="{{ event.registration_deadline|date:'c' }}">Calculating…</span>
+        </div>
+      {% endif %}
       <div class="event-card-footer">
         {% include "events/_availability_badge.html" %}
         <span class="view-details-arrow">
@@ -63,3 +69,26 @@
     </div>
   </div>
 </div>
+
+<script>
+  if (!window.__registrationCountdownInitialized) {
+    window.__registrationCountdownInitialized = true;
+    document.addEventListener("DOMContentLoaded", function () {
+      const timers = document.querySelectorAll(".registration-countdown");
+      const updateTimers = () => timers.forEach((timer) => {
+        const remaining = new Date(timer.dataset.deadline).getTime() - Date.now();
+        if (remaining <= 0) {
+          timer.textContent = "Closed";
+          return;
+        }
+        const days = Math.floor(remaining / 86400000);
+        const hours = Math.floor((remaining % 86400000) / 3600000);
+        const minutes = Math.floor((remaining % 3600000) / 60000);
+        const seconds = Math.floor((remaining % 60000) / 1000);
+        timer.textContent = days ? `${days}d ${hours}h ${minutes}m` : `${hours}h ${minutes}m ${seconds}s`;
+      });
+      updateTimers();
+      window.setInterval(updateTimers, 1000);
+    });
+  }
+</script>
