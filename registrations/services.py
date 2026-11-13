@@ -1,6 +1,5 @@
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
-from django.utils import timezone
 
 from events.models import Event
 
