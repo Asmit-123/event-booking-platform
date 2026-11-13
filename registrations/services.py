@@ -1,5 +1,6 @@
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
+from django.utils import timezone
 
 from events.models import Event
 
@@ -22,6 +23,8 @@ def register_for_event(attendee, event_id):
         raise ValidationError("This event has been cancelled.")
     if event.is_past:
         raise ValidationError("Registration is closed: this event has already started.")
+    if event.is_registration_closed:
+        raise ValidationError("Registration for this event has closed.")
     if event.registrations.filter(attendee=attendee).exists():
         raise ValidationError("You are already registered for this event.")
     if event.registrations.count() >= event.seat_limit:
